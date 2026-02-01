@@ -1,98 +1,180 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Container, Text, Card, Button } from '@/src/presentation/components/atoms';
+import { useLifeCareTheme } from '@/src/presentation/theme';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function DashboardScreen() {
+  const router = useRouter();
+  const { theme } = useLifeCareTheme();
 
-export default function HomeScreen() {
+  const stats = [
+    { label: 'Patients', value: '24', icon: '👥' },
+    { label: 'Alertes', value: '3', icon: '⚠️', color: '#e74c3c' },
+    { label: 'Soins dus', value: '12', icon: '📋' },
+  ];
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <Container scrollable>
+      <View style={styles.header}>
+        <View>
+          <Text variant="title">Bonjour, Dr. Martin</Text>
+          <Text variant="secondary">Lundi 1 Février 2026</Text>
+        </View>
+        <TouchableOpacity 
+          style={[styles.profileButton, { backgroundColor: theme.primary + '20' }]}
+          onPress={() => router.push('/(tabs)/settings')}
+        >
+          <Text style={{ fontSize: 20 }}>👨‍⚕️</Text>
+        </TouchableOpacity>
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <View style={styles.statsGrid}>
+        {stats.map((stat, index) => (
+          <Card key={index} style={styles.statCard}>
+            <Text style={{ fontSize: 24, marginBottom: 8 }}>{stat.icon}</Text>
+            <Text style={[styles.statValue, stat.color ? { color: stat.color } : {}]}>{stat.value}</Text>
+            <Text variant="caption">{stat.label}</Text>
+          </Card>
+        ))}
+      </View>
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text variant="subtitle">Alertes Urgentes</Text>
+          <TouchableOpacity onPress={() => {}}>
+            <Text style={{ color: theme.primary }}>Voir tout</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <Card style={[styles.alertCard, { borderLeftColor: theme.error }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontWeight: 'bold' }}>Robert Martin (Ch. 312)</Text>
+            <Text variant="caption">Tension critique : 180/110 mmHg</Text>
+          </View>
+          <Button 
+            title="Agir" 
+            onPress={() => router.push('/(tabs)/patients/3')} 
+            style={{ paddingVertical: 6, paddingHorizontal: 12 }}
+          />
+        </Card>
+      </View>
+
+      <View style={styles.section}>
+        <Text variant="subtitle" style={styles.sectionTitle}>Accès Rapide</Text>
+        <View style={styles.quickActions}>
+          <QuickActionButton 
+            label="Patients" 
+            icon="👥" 
+            onPress={() => router.push('/(tabs)/patients')} 
+          />
+          <QuickActionButton 
+            label="Scanner" 
+            icon="📸" 
+            onPress={() => router.push('/(tabs)/medication/admin')} 
+          />
+          <QuickActionButton 
+            label="IA" 
+            icon="🧠" 
+            onPress={() => router.push('/(tabs)/medical/ai-evaluation')} 
+          />
+          <QuickActionButton 
+            label="Factures" 
+            icon="💳" 
+            onPress={() => router.push('/(tabs)/finance/invoice-new')} 
+          />
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text variant="subtitle" style={styles.sectionTitle}>Évolution du Service</Text>
+        <Card style={styles.chartPlaceholder}>
+          <Text variant="secondary">Graphique d'activité hebdomadaire</Text>
+          <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+            <Text variant="caption">[Visualisation Graphique]</Text>
+          </View>
+        </Card>
+      </View>
+    </Container>
   );
 }
 
+const QuickActionButton = ({ label, icon, onPress }: any) => {
+  const { theme } = useLifeCareTheme();
+  return (
+    <TouchableOpacity style={styles.quickActionButton} onPress={onPress}>
+      <View style={[styles.quickActionIcon, { backgroundColor: theme.primary + '10' }]}>
+        <Text style={{ fontSize: 24 }}>{icon}</Text>
+      </View>
+      <Text variant="caption" style={{ marginTop: 4 }}>{label}</Text>
+    </TouchableOpacity>
+  );
+};
+
 const styles = StyleSheet.create({
-  titleContainer: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  profileButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  statCard: {
+    width: '31%',
+    alignItems: 'center',
+    padding: 12,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    marginBottom: 12,
+  },
+  alertCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    borderLeftWidth: 4,
+    padding: 12,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  quickActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  quickActionButton: {
+    alignItems: 'center',
+    width: '22%',
   },
+  quickActionIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chartPlaceholder: {
+    height: 160,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
