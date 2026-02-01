@@ -1,34 +1,23 @@
 // Fallback for using MaterialIcons on Android and web.
 
+import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
-import { ComponentProps } from 'react';
+import { SymbolWeight } from 'expo-symbols';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
+const MAPPING = {
+  'house.fill': { lib: 'Ionicons', name: 'home' },
+  'paperplane.fill': { lib: 'Ionicons', name: 'paper-plane' },
+  'chevron.left.forwardslash.chevron.right': { lib: 'MaterialIcons', name: 'code' },
+  'chevron.right': { lib: 'MaterialIcons', name: 'chevron-right' },
+  'person.2.fill': { lib: 'Ionicons', name: 'people' },
+  'heart.text.square.fill': { lib: 'Ionicons', name: 'heart-half' },
+  'creditcard.fill': { lib: 'Ionicons', name: 'card' },
+  'gearshape.fill': { lib: 'Ionicons', name: 'settings' },
+} as const;
+
 type IconSymbolName = keyof typeof MAPPING;
 
-/**
- * Add your SF Symbols to Material Icons mappings here.
- * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
- * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
- */
-const MAPPING = {
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-  'person.2.fill': 'people',
-  'heart.text.square.fill': 'medical-services',
-  'creditcard.fill': 'payments',
-  'gearshape.fill': 'settings',
-} as IconMapping;
-
-/**
- * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
- * This ensures a consistent look across platforms, and optimal resource usage.
- * Icon `name`s are based on SF Symbols and require manual mapping to Material Icons.
- */
 export function IconSymbol({
   name,
   size = 24,
@@ -41,5 +30,11 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  const iconConfig = MAPPING[name];
+  
+  if (iconConfig.lib === 'Ionicons') {
+    return <Ionicons color={color as any} size={size} name={iconConfig.name as any} style={style} />;
+  }
+  
+  return <MaterialIcons color={color as any} size={size} name={iconConfig.name as any} style={style} />;
 }

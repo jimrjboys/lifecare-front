@@ -105,6 +105,7 @@ export const LifeCareTheme = {
     
     // Médical
     medical: LifeCareColors.medical,
+    border: '#E9ECEF',
   },
   
   dark: {
@@ -141,6 +142,7 @@ export const LifeCareTheme = {
     
     // Médical
     medical: LifeCareColors.medical,
+    border: '#333333',
   },
 };
 

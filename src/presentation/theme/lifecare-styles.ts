@@ -134,7 +134,7 @@ export const LifeCareStyles = StyleSheet.create({
   
   // Barre de navigation
   tabBar: {
-    backgroundColor: LifeCareTheme.light.tabBar,
+    backgroundColor: LifeCareTheme.light.surface,
     borderTopWidth: 1,
     borderTopColor: LifeCareTheme.light.border,
     paddingBottom: 8,
@@ -305,9 +305,9 @@ export const LifeCareDarkStyles = StyleSheet.create({
   },
   
   tabBar: {
-    backgroundColor: LifeCareTheme.dark.background,
+    backgroundColor: LifeCareTheme.dark.surface,
     borderTopWidth: 1,
-    borderTopColor: LifeCareTheme.dark.backgroundSecondary,
+    borderTopColor: LifeCareTheme.dark.border,
     paddingBottom: 8,
     paddingTop: 8,
   },
