@@ -1,63 +1,77 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Container, Text, Card, Button } from '@/src/presentation/components/atoms';
 import { useLifeCareTheme } from '@/src/presentation/theme';
+import { usePatientStore } from '@/src/application/stores/patient-store';
 
 export default function PatientProfileScreen() {
   const { id } = useLocalSearchParams();
-  const { theme } = useLifeCareTheme();
+  const { theme, styles: themeStyles } = useLifeCareTheme();
   const router = useRouter();
+  
+  const patients = usePatientStore((state) => state.patients);
+  const patient = patients.find(p => p.id === id);
 
-  // Mock data for a single patient
-  const patient = {
-    id,
-    name: 'Jean Dupont',
-    age: 65,
-    gender: 'Masculin',
-    room: '204',
-    bloodType: 'A+',
-    allergies: 'Pénicilline',
-    conditions: 'Hypertension, Diabète Type 2',
-    lastVitals: {
-      bp: '130/85',
-      hr: '72 bpm',
-      temp: '37.1°C',
-      spo2: '98%'
-    }
-  };
+  if (!patient) {
+    return (
+      <Container>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>Patient non trouvé</Text>
+          <Button title="Retour" onPress={() => router.back()} style={{ marginTop: 20 }} />
+        </View>
+      </Container>
+    );
+  }
+
+  // Calcul de l'âge
+  const birthDate = new Date(patient.birthDate);
+  const age = new Date().getFullYear() - birthDate.getFullYear();
+
+  // Dernières constantes
+  const lastVitals = patient.vitals && patient.vitals.length > 0 
+    ? patient.vitals[patient.vitals.length - 1] 
+    : null;
+
+  const borderStyle = { borderBottomColor: theme.backgroundSecondary };
 
   return (
     <Container scrollable>
       <View style={styles.header}>
         <View style={[styles.avatar, { backgroundColor: theme.primary }]}>
-          <Text style={{ color: '#fff', fontSize: 32, fontWeight: 'bold' }}>JD</Text>
+          <Text style={{ color: theme.textOnPrimary, fontSize: 32, fontWeight: 'bold' }}>
+            {patient.firstName[0]}{patient.lastName[0]}
+          </Text>
         </View>
-        <Text variant="title" style={{ marginTop: 12 }}>{patient.name}</Text>
-        <Text variant="secondary">{patient.gender}, {patient.age} ans • Chambre {patient.room}</Text>
+        <Text variant="title" style={{ marginTop: 12 }}>{patient.firstName} {patient.lastName}</Text>
+        <Text variant="secondary">{patient.gender === 'M' ? 'Masculin' : 'Féminin'}, {age} ans • Chambre {patient.room || 'N/A'}</Text>
       </View>
 
       <View style={styles.section}>
         <Text variant="subtitle" style={styles.sectionTitle}>Informations Médicales</Text>
         <Card>
-          <View style={styles.infoRow}>
+          <View style={[styles.infoRow, borderStyle]}>
+            <Text variant="secondary">NSS</Text>
+            <Text style={{ fontWeight: 'bold', color: theme.textPrimary }}>{patient.socialSecurityNumber || 'N/A'}</Text>
+          </View>
+          <View style={[styles.infoRow, borderStyle]}>
             <Text variant="secondary">Groupe Sanguin</Text>
-            <Text style={{ fontWeight: 'bold' }}>{patient.bloodType}</Text>
+            <Text style={{ fontWeight: 'bold', color: theme.textPrimary }}>{patient.bloodType || 'Inconnu'}</Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={[styles.infoRow, borderStyle]}>
             <Text variant="secondary">Allergies</Text>
-            <Text style={{ color: theme.error, fontWeight: 'bold' }}>{patient.allergies}</Text>
+            <Text style={{ color: theme.error, fontWeight: 'bold' }}>{patient.allergies?.join(', ') || 'Aucune'}</Text>
           </View>
-          <View style={styles.infoRow}>
+          <View style={[styles.infoRow, { borderBottomWidth: 0 }]}>
             <Text variant="secondary">Conditions</Text>
-            <Text style={{ textAlign: 'right', flex: 1 }}>{patient.conditions}</Text>
+            <Text style={{ textAlign: 'right', flex: 1, color: theme.textPrimary }}>{patient.conditions?.join(', ') || 'Aucune'}</Text>
           </View>
         </Card>
       </View>
 
       <View style={styles.section}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text variant="subtitle" style={styles.sectionTitle}>Dernières Constantes</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <Text variant="subtitle">Dernières Constantes</Text>
           <Button 
             title="Historique" 
             variant="outline" 
@@ -68,19 +82,19 @@ export default function PatientProfileScreen() {
         <View style={styles.vitalsGrid}>
           <Card style={styles.vitalCard}>
             <Text variant="caption">Tension</Text>
-            <Text style={styles.vitalValue}>{patient.lastVitals.bp}</Text>
+            <Text style={[styles.vitalValue, { color: theme.textPrimary }]}>{lastVitals ? `${lastVitals.bloodPressureSys}/${lastVitals.bloodPressureDia}` : '--'}</Text>
           </Card>
           <Card style={styles.vitalCard}>
             <Text variant="caption">Pouls</Text>
-            <Text style={styles.vitalValue}>{patient.lastVitals.hr}</Text>
+            <Text style={[styles.vitalValue, { color: theme.textPrimary }]}>{lastVitals?.heartRate ? `${lastVitals.heartRate} bpm` : '--'}</Text>
           </Card>
           <Card style={styles.vitalCard}>
             <Text variant="caption">Temp.</Text>
-            <Text style={styles.vitalValue}>{patient.lastVitals.temp}</Text>
+            <Text style={[styles.vitalValue, { color: theme.textPrimary }]}>{lastVitals?.temperature ? `${lastVitals.temperature}°C` : '--'}</Text>
           </Card>
           <Card style={styles.vitalCard}>
             <Text variant="caption">SpO2</Text>
-            <Text style={styles.vitalValue}>{patient.lastVitals.spo2}</Text>
+            <Text style={[styles.vitalValue, { color: theme.textPrimary }]}>{lastVitals?.oxygenSaturation ? `${lastVitals.oxygenSaturation}%` : '--'}</Text>
           </Card>
         </View>
       </View>
@@ -98,7 +112,7 @@ export default function PatientProfileScreen() {
         />
         <Button 
           title="Administrer Médicament" 
-          variant="outline" 
+          variant="outline"
           onPress={() => router.push(`/(tabs)/medication/admin?id=${id}`)} 
           style={{ marginTop: 12 }}
         />
@@ -130,7 +144,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
   },
   vitalsGrid: {
     flexDirection: 'row',

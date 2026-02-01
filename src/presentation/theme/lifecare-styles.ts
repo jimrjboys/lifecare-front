@@ -4,7 +4,7 @@
  */
 
 import { StyleSheet } from 'react-native';
-import { LifeCareTheme, LifeCareSpacing, LifeCareBorderRadius, LifeCareShadows } from '../constants/lifecare-theme';
+import { LifeCareTheme, LifeCareSpacing, LifeCareBorderRadius, LifeCareShadows } from './lifecare-theme';
 
 // Styles de base pour les composants LifeCare
 export const LifeCareStyles = StyleSheet.create({
@@ -222,6 +222,27 @@ export const LifeCareDarkStyles = StyleSheet.create({
     ...LifeCareShadows.sm,
   },
   
+  buttonSecondary: {
+    backgroundColor: LifeCareTheme.dark.secondary,
+    borderRadius: LifeCareBorderRadius.xl,
+    paddingVertical: LifeCareSpacing.md,
+    paddingHorizontal: LifeCareSpacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...LifeCareShadows.sm,
+  },
+  
+  buttonOutline: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: LifeCareTheme.dark.primary,
+    borderRadius: LifeCareBorderRadius.xl,
+    paddingVertical: LifeCareSpacing.md,
+    paddingHorizontal: LifeCareSpacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  
   textPrimary: {
     color: LifeCareTheme.dark.textPrimary,
     fontSize: 16,
@@ -234,10 +255,43 @@ export const LifeCareDarkStyles = StyleSheet.create({
     lineHeight: 20,
   },
   
+  textButton: {
+    color: LifeCareTheme.dark.textOnPrimary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  
+  textButtonOutline: {
+    color: LifeCareTheme.dark.primary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  
+  titleLarge: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: LifeCareTheme.dark.textPrimary,
+    marginBottom: LifeCareSpacing.sm,
+  },
+  
+  titleMedium: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: LifeCareTheme.dark.textPrimary,
+    marginBottom: LifeCareSpacing.sm,
+  },
+  
+  titleSmall: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: LifeCareTheme.dark.textPrimary,
+    marginBottom: LifeCareSpacing.xs,
+  },
+  
   input: {
     backgroundColor: LifeCareTheme.dark.surface,
     borderWidth: 1,
-    borderColor: LifeCareTheme.dark.border,
+    borderColor: LifeCareTheme.dark.backgroundSecondary,
     borderRadius: LifeCareBorderRadius.md,
     paddingHorizontal: LifeCareSpacing.md,
     paddingVertical: LifeCareSpacing.sm,
@@ -245,10 +299,15 @@ export const LifeCareDarkStyles = StyleSheet.create({
     color: LifeCareTheme.dark.textPrimary,
   },
   
+  inputFocused: {
+    borderColor: LifeCareTheme.dark.primary,
+    borderWidth: 2,
+  },
+  
   tabBar: {
-    backgroundColor: LifeCareTheme.dark.tabBar,
+    backgroundColor: LifeCareTheme.dark.background,
     borderTopWidth: 1,
-    borderTopColor: LifeCareTheme.dark.border,
+    borderTopColor: LifeCareTheme.dark.backgroundSecondary,
     paddingBottom: 8,
     paddingTop: 8,
   },

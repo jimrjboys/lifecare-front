@@ -36,7 +36,7 @@ export const Input: React.FC<InputProps> = ({
           error && { borderColor: theme.error }
         ]}
         placeholder={placeholder}
-        placeholderTextColor="#999"
+        placeholderTextColor={isDark ? '#777' : '#999'}
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}

@@ -1,18 +1,26 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Container, Text, Card, Button } from '@/src/presentation/components/atoms';
 import { useLifeCareTheme } from '@/src/presentation/theme';
+import { usePatientStore } from '@/src/application/stores/patient-store';
+import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
+import * as shape from 'd3-shape';
 
 export default function DashboardScreen() {
   const router = useRouter();
   const { theme } = useLifeCareTheme();
-
+  const patients = usePatientStore((state) => state.patients);
+  
   const stats = [
-    { label: 'Patients', value: '24', icon: '👥' },
-    { label: 'Alertes', value: '3', icon: '⚠️', color: '#e74c3c' },
-    { label: 'Soins dus', value: '12', icon: '📋' },
+    { label: 'Patients', value: patients.length.toString(), icon: '👥' },
+    { label: 'Alertes', value: '1', icon: '⚠️', color: '#e74c3c' },
+    { label: 'Soins dus', value: '8', icon: '📋' },
   ];
+
+  // Données simulées pour le graphique d'activité
+  const activityData = [10, 25, 18, 40, 32, 55, 45];
+  const contentInset = { top: 20, bottom: 20 };
 
   return (
     <Container scrollable>
@@ -88,10 +96,34 @@ export default function DashboardScreen() {
 
       <View style={styles.section}>
         <Text variant="subtitle" style={styles.sectionTitle}>Évolution du Service</Text>
-        <Card style={styles.chartPlaceholder}>
-          <Text variant="secondary">Graphique d'activité hebdomadaire</Text>
-          <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-            <Text variant="caption">[Visualisation Graphique]</Text>
+        <Card style={styles.chartCard}>
+          <Text variant="secondary" style={{ marginBottom: 15 }}>Activité de la semaine</Text>
+          <View style={{ height: 200, flexDirection: 'row' }}>
+            <YAxis
+              data={activityData}
+              contentInset={contentInset}
+              svg={{ fill: 'grey', fontSize: 10 }}
+              numberOfTicks={5}
+              formatLabel={(value) => `${value}`}
+            />
+            <View style={{ flex: 1, marginLeft: 10 }}>
+              <LineChart
+                style={{ flex: 1 }}
+                data={activityData}
+                svg={{ stroke: theme.primary, strokeWidth: 3 }}
+                contentInset={contentInset}
+                curve={shape.curveNatural}
+              >
+                <Grid />
+              </LineChart>
+              <XAxis
+                style={{ marginHorizontal: -10, height: 20 }}
+                data={activityData}
+                formatLabel={(value, index) => ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'][index]}
+                contentInset={{ left: 10, right: 10 }}
+                svg={{ fontSize: 10, fill: 'grey' }}
+              />
+            </View>
           </View>
         </Card>
       </View>
@@ -172,9 +204,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  chartPlaceholder: {
-    height: 160,
-    justifyContent: 'center',
-    alignItems: 'center',
+  chartCard: {
+    padding: 16,
+    minHeight: 250,
   }
 });

@@ -1,25 +1,38 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Container, Text, Input, Button, Card } from '@/src/presentation/components/atoms';
 import { useLifeCareTheme } from '@/src/presentation/theme';
+import { usePatientStore } from '@/src/application/stores/patient-store';
 
 export default function NewVitalsScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { theme } = useLifeCareTheme();
+  const addVitals = usePatientStore((state) => state.addVitals);
 
   const [vitals, setVitals] = useState({
     systolic: '',
     diastolic: '',
     heartRate: '',
     temperature: '',
-    weight: '',
-    oxygen: '',
+    oxygenSaturation: '',
   });
 
   const handleSave = () => {
-    // Static logic
+    if (!vitals.systolic || !vitals.diastolic || !vitals.heartRate) {
+      Alert.alert('Erreur', 'Veuillez remplir au moins la tension et le pouls.');
+      return;
+    }
+
+    addVitals(id as string, {
+      bloodPressureSys: parseInt(vitals.systolic),
+      bloodPressureDia: parseInt(vitals.diastolic),
+      heartRate: parseInt(vitals.heartRate),
+      temperature: parseFloat(vitals.temperature) || 36.6,
+      oxygenSaturation: parseInt(vitals.oxygenSaturation) || 98,
+    });
+
     router.back();
   };
 
@@ -63,17 +76,10 @@ export default function NewVitalsScreen() {
           keyboardType="numeric"
         />
         <Input
-          label="Poids (kg)"
-          placeholder="Ex: 70"
-          value={vitals.weight}
-          onChangeText={(v) => setVitals({...vitals, weight: v})}
-          keyboardType="numeric"
-        />
-        <Input
           label="Saturation O2 (%)"
           placeholder="Ex: 98"
-          value={vitals.oxygen}
-          onChangeText={(v) => setVitals({...vitals, oxygen: v})}
+          value={vitals.oxygenSaturation}
+          onChangeText={(v) => setVitals({...vitals, oxygenSaturation: v})}
           keyboardType="numeric"
         />
       </Card>
