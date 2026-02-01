@@ -1,44 +1,42 @@
 /**
  * LifeCare Theme - Thème médical professionnel
- * Couleurs inspirées du secteur médical avec une approche moderne et rassurante
+ * Couleurs inspirées du secteur médical : Bleu (Confiance) & Teal (Soin)
  */
 
-import { Platform } from 'react-native';
-
-// Palette de couleurs LifeCare
+// Palette de couleurs LifeCare (Blue & Teal)
 const LifeCareColors = {
-  // Couleurs principales - vert médical
+  // Couleurs principales - Bleu médical (Confiance, Technologie)
   primary: {
-    50: '#E8F5E8',   // Très clair
-    100: '#C8E6C9',  // Clair
-    500: '#4CAF50',  // Principal
-    600: '#43A047',  // Moyen
-    700: '#388E3C',  // Sombre
-    900: '#1B5E20',  // Très sombre
+    50: '#E1F5FE',
+    100: '#B3E5FC',
+    500: '#0077B6',  // Bleu principal
+    600: '#023E8A',
+    700: '#03045E',
+    900: '#001233',
   },
   
-  // Couleurs secondaires - bleu médical
+  // Couleurs secondaires - Teal (Apaisement, Soin)
   secondary: {
-    50: '#E3F2FD',
-    100: '#BBDEFB',
-    500: '#2196F3',
-    600: '#1976D2',
-    700: '#1565C0',
-    900: '#0D47A1',
+    50: '#E0F7FA',
+    100: '#B2EBF2',
+    500: '#00B4D8',  // Teal principal
+    600: '#0096C7',
+    700: '#0077B6',
+    900: '#023E8A',
   },
   
-  // Couleurs d'accent - orange chaleureux
+  // Couleurs d'accent - Corail (Vitalité, Urgence contrôlée)
   accent: {
-    50: '#FFF3E0',
-    100: '#FFE0B2',
-    500: '#FF9800',
-    600: '#F57C00',
-    700: '#EF6C00',
+    50: '#FBE9E7',
+    100: '#FFCCBC',
+    500: '#E76F51',
+    600: '#D84315',
+    700: '#BF360C',
   },
   
   // Couleurs de fond
   background: {
-    light: '#FAFAFA',
+    light: '#F8F9FA',
     dark: '#121212',
     card: '#FFFFFF',
     cardDark: '#1E1E1E',
@@ -46,28 +44,28 @@ const LifeCareColors = {
   
   // Couleurs de texte
   text: {
-    primary: '#212121',
-    secondary: '#757575',
-    disabled: '#BDBDBD',
+    primary: '#1A1A1A',
+    secondary: '#6C757D',
+    disabled: '#ADB5BD',
     light: '#FFFFFF',
     dark: '#000000',
   },
   
   // Couleurs d'état
   status: {
-    success: '#4CAF50',
-    warning: '#FF9800',
-    error: '#F44336',
-    info: '#2196F3',
+    success: '#2A9D8F', // Teal sombre
+    warning: '#E9C46A', // Ambre doux
+    error: '#E76F51',   // Corail rouge
+    info: '#0077B6',    // Bleu primaire
   },
   
   // Couleurs médicales spécifiques
   medical: {
-    heartRate: '#E91E63',
-    bloodPressure: '#9C27B0',
-    temperature: '#FF5722',
-    oxygen: '#00BCD4',
-    glucose: '#FFC107',
+    heartRate: '#E76F51',    // Rouge/Corail
+    bloodPressure: '#9C27B0', // Violet standard
+    temperature: '#E9C46A',   // Ambre/Orange
+    oxygen: '#00B4D8',        // Bleu cyan
+    glucose: '#2A9D8F',       // Vert/Teal
   },
 };
 
@@ -89,8 +87,9 @@ export const LifeCareTheme = {
     
     // Fonds
     background: LifeCareColors.background.light,
-    backgroundSecondary: LifeCareColors.background.card,
+    backgroundSecondary: '#F1F3F5',
     surface: LifeCareColors.background.card,
+    card: LifeCareColors.background.card,
     
     // Texte
     textPrimary: LifeCareColors.text.primary,
@@ -98,174 +97,49 @@ export const LifeCareTheme = {
     textOnPrimary: LifeCareColors.text.light,
     textOnSecondary: LifeCareColors.text.light,
     
-    // État
+    // États
     success: LifeCareColors.status.success,
     warning: LifeCareColors.status.warning,
     error: LifeCareColors.status.error,
     info: LifeCareColors.status.info,
     
     // Médical
-    heartRate: LifeCareColors.medical.heartRate,
-    bloodPressure: LifeCareColors.medical.bloodPressure,
-    temperature: LifeCareColors.medical.temperature,
-    oxygen: LifeCareColors.medical.oxygen,
-    glucose: LifeCareColors.medical.glucose,
-    
- // Onglets et navigation
-    tabBar: LifeCareColors.background.card,
-    tabBarInactive: LifeCareColors.text.secondary,
-    tabBarActive: LifeCareColors.primary[500],
-    
-    // Bordures et séparateurs
-    border: '#E0E0E0',
-    divider: '#F5F5F5',
-    
-    // Ombres
-    shadow: '#000000',
-    shadowOpacity: 0.1,
+    medical: LifeCareColors.medical,
   },
   
   dark: {
-    // Couleurs principales
-    primary: LifeCareColors.primary[500],
-    primaryDark: LifeCareColors.primary[300],
-    primaryLight: LifeCareColors.primary[700],
+    // Couleurs principales (ajustées pour dark mode)
+    primary: '#48CAE4', // Plus lumineux
+    primaryDark: LifeCareColors.primary[600],
+    primaryLight: LifeCareColors.primary[900],
     
-    secondary: LifeCareColors.secondary[500],
-    secondaryDark: LifeCareColors.secondary[300],
-    secondaryLight: LifeCareColors.secondary[700],
+    secondary: '#90E0EF',
+    secondaryDark: LifeCareColors.secondary[600],
+    secondaryLight: LifeCareColors.secondary[900],
     
-    accent: LifeCareColors.accent[500],
-    accentDark: LifeCareColors.accent[300],
-    accentLight: LifeCareColors.accent[700],
+    accent: '#F4A261',
+    accentDark: LifeCareColors.accent[600],
+    accentLight: LifeCareColors.accent[900],
     
     // Fonds
     background: LifeCareColors.background.dark,
-    backgroundSecondary: LifeCareColors.background.cardDark,
+    backgroundSecondary: '#2C2C2C',
     surface: LifeCareColors.background.cardDark,
+    card: LifeCareColors.background.cardDark,
     
     // Texte
-    textPrimary: LifeCareColors.text.light,
-    textSecondary: '#BDBDBD',
-    textOnPrimary: LifeCareColors.text.light,
-    textOnSecondary: LifeCareColors.text.light,
+    textPrimary: '#E0E0E0',
+    textSecondary: '#A0A0A0',
+    textOnPrimary: LifeCareColors.text.dark,
+    textOnSecondary: LifeCareColors.text.dark,
     
-    // État
-    success: LifeCareColors.status.success,
-    warning: LifeCareColors.status.warning,
-    error: LifeCareColors.status.error,
-    info: LifeCareColors.status.info,
+    // États
+    success: '#2A9D8F',
+    warning: '#E9C46A',
+    error: '#E76F51',
+    info: '#48CAE4',
     
     // Médical
-    heartRate: LifeCareColors.medical.heartRate,
-    bloodPressure: LifeCareColors.medical.bloodPressure,
-    temperature: LifeCareColors.medical.temperature,
-    oxygen: LifeCareColors.medical.oxygen,
-    glucose: LifeCareColors.medical.glucose,
-    
-    // Onglets et navigation
-    tabBar: LifeCareColors.background.cardDark,
-    tabBarInactive: '#BDBDBD',
-    tabBarActive: LifeCareColors.primary[400],
-    
-    // Bordures et séparateurs
-    border: '#333333',
-    divider: '#2C2C2C',
-    
-    // Ombres
-    shadow: '#000000',
-    shadowOpacity: 0.3,
+    medical: LifeCareColors.medical,
   },
-};
-
-// Typographie LifeCare
-export const LifeCareFonts = {
-  ...Platform.select({
-    ios: {
-      sans: 'SF Pro Display',
-      serif: 'New York',
-      rounded: 'SF Pro Rounded',
-      mono: 'SF Mono',
-    },
-    android: {
-      sans: 'Roboto',
-      serif: 'Noto Serif',
-      rounded: 'Roboto',
-      mono: 'Roboto Mono',
-    },
-    web: {
-      sans: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      serif: 'Georgia, "Times New Roman", serif',
-      rounded: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif',
-      mono: '"SF Mono", Monaco, "Cascadia Code", "Roboto Mono", monospace',
-    },
-  }),
-};
-
-// Tailles de police
-export const LifeCareFontSizes = {
-  xs: 12,
-  sm: 14,
-  md: 16,
-  lg: 18,
-  xl: 20,
-  '2xl': 24,
-  '3xl': 30,
-  '4xl': 36,
-  '5xl': 48,
-};
-
-// Espacements
-export const LifeCareSpacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  '2xl': 48,
-  '3xl': 64,
-};
-
-// Rayons de bordure
-export const LifeCareBorderRadius = {
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
-  full: 9999,
-};
-
-// Ombres
-export const LifeCareShadows = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  lg: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-};
-
-// Export par défaut
-export default {
-  colors: LifeCareTheme,
-  fonts: LifeCareFonts,
-  fontSizes: LifeCareFontSizes,
-  spacing: LifeCareSpacing,
-  borderRadius: LifeCareBorderRadius,
-  shadows: LifeCareShadows,
 };

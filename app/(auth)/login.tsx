@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Container, Text, Input, Button } from '@/src/presentation/components/atoms';
+import { Container, Text, Input, Button, Logo } from '@/src/presentation/components/atoms';
 import { useLifeCareTheme } from '@/src/presentation/theme';
 
 export default function LoginScreen() {
@@ -18,8 +18,8 @@ export default function LoginScreen() {
   return (
     <Container style={styles.container}>
       <View style={styles.logoContainer}>
-        <View style={[styles.logoPlaceholder, { backgroundColor: theme.primary }]}>
-          <Text variant="title" style={{ color: '#fff', fontSize: 40 }}>LC</Text>
+        <View style={styles.logoWrapper}>
+          <Logo size={120} />
         </View>
         <Text variant="title" style={styles.title}>LifeCare</Text>
         <Text variant="secondary">Solution Médicale Intégrée</Text>
@@ -72,17 +72,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
-  logoPlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
+  logoWrapper: {
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
+    marginTop: 10,
   },
   form: {
     width: '100%',
