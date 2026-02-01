@@ -7,7 +7,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useLifeCareTheme } from '@/src/presentation/theme';
 
 export default function TabLayout() {
-  const { theme, isDark } = useLifeCareTheme();
+  const { theme } = useLifeCareTheme();
 
   return (
     <Tabs
@@ -17,11 +17,19 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          backgroundColor: theme.card,
+          backgroundColor: theme.surface,
           borderTopColor: theme.border,
-          height: Platform.OS === 'ios' ? 88 : 60,
-          paddingBottom: Platform.OS === 'ios' ? 30 : 10,
+          height: Platform.OS === 'ios' ? 88 : 65,
+          paddingBottom: Platform.OS === 'ios' ? 30 : 12,
+          paddingTop: 8,
+          borderTopWidth: 1,
+          elevation: 0,
+          shadowOpacity: 0,
         },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        }
       }}>
       <Tabs.Screen
         name="index"

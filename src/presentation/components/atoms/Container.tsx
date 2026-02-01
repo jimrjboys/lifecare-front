@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import { View, ScrollView, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLifeCareTheme } from '../../theme';
 
 interface ContainerProps {
@@ -14,10 +15,11 @@ export const Container: React.FC<ContainerProps> = ({ children, scrollable = fal
   const Content = scrollable ? ScrollView : View;
   
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+    <SafeAreaView style={{ flex: 1, width: '100%', backgroundColor: theme.background }}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <Content 
         style={[styles.container, style]}
+        contentContainerStyle={scrollable ? { flexGrow: 1 } : undefined}
         showsVerticalScrollIndicator={false}
       >
         {children}

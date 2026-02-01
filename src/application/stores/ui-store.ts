@@ -11,22 +11,14 @@ interface UIState {
   toggleTheme: () => void;
 }
 
-export const useUIStore = create<UIState>()(
-  persist(
-    (set) => ({
-      themeMode: 'system',
-      setThemeMode: (mode) => set({ themeMode: mode }),
-      toggleTheme: () => set((state) => {
-        if (state.themeMode === 'system') {
-          const systemColorScheme = Appearance.getColorScheme();
-          return { themeMode: systemColorScheme === 'dark' ? 'light' : 'dark' };
-        }
-        return { themeMode: state.themeMode === 'dark' ? 'light' : 'dark' };
-      }),
-    }),
-    {
-      name: 'ui-storage',
-      storage: createJSONStorage(() => AsyncStorage),
+export const useUIStore = create<UIState>((set) => ({
+  themeMode: 'system',
+  setThemeMode: (mode) => set({ themeMode: mode }),
+  toggleTheme: () => set((state) => {
+    if (state.themeMode === 'system') {
+      const systemColorScheme = Appearance.getColorScheme();
+      return { themeMode: systemColorScheme === 'dark' ? 'light' : 'dark' };
     }
-  )
-);
+    return { themeMode: state.themeMode === 'dark' ? 'light' : 'dark' };
+  }),
+}));

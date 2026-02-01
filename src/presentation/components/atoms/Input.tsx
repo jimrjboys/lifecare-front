@@ -23,7 +23,7 @@ export const Input: React.FC<InputProps> = ({
   error,
   style 
 }) => {
-  const { styles, theme } = useLifeCareTheme();
+  const { styles, theme, isDark } = useLifeCareTheme();
   const [isFocused, setIsFocused] = useState(false);
   
   return (

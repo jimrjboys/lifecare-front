@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Switch } from 'react-native';
+import { View, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Container, Text, Card, Button } from '@/src/presentation/components/atoms';
 import { useLifeCareTheme } from '@/src/presentation/theme';
@@ -103,5 +103,3 @@ export default function SettingsScreen() {
     </Container>
   );
 }
-
-import { TouchableOpacity } from 'react-native';

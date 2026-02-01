@@ -1,23 +1,25 @@
-// Fallback for using MaterialIcons on Android and web.
-
-import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight } from 'expo-symbols';
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
+// Mapping des noms SFSymbols vers Ionicons
 const MAPPING = {
-  'house.fill': { lib: 'Ionicons', name: 'home' },
-  'paperplane.fill': { lib: 'Ionicons', name: 'paper-plane' },
-  'chevron.left.forwardslash.chevron.right': { lib: 'MaterialIcons', name: 'code' },
-  'chevron.right': { lib: 'MaterialIcons', name: 'chevron-right' },
-  'person.2.fill': { lib: 'Ionicons', name: 'people' },
-  'heart.text.square.fill': { lib: 'Ionicons', name: 'heart-half' },
-  'creditcard.fill': { lib: 'Ionicons', name: 'card' },
-  'gearshape.fill': { lib: 'Ionicons', name: 'settings' },
+  'house.fill': 'home',
+  'paperplane.fill': 'send',
+  'chevron.left.forwardslash.chevron.right': 'code-slash',
+  'chevron.right': 'chevron-forward',
+  'person.2.fill': 'people',
+  'heart.text.square.fill': 'medical',
+  'creditcard.fill': 'card',
+  'gearshape.fill': 'settings',
+  'plus': 'add',
 } as const;
 
-type IconSymbolName = keyof typeof MAPPING;
+export type IconSymbolName = keyof typeof MAPPING;
 
+/**
+ * An icon component that uses native SFSymbols on iOS, and Ionicons on Android and web.
+ */
 export function IconSymbol({
   name,
   size = 24,
@@ -28,13 +30,8 @@ export function IconSymbol({
   size?: number;
   color: string | OpaqueColorValue;
   style?: StyleProp<TextStyle>;
-  weight?: SymbolWeight;
 }) {
-  const iconConfig = MAPPING[name];
+  const iconName = MAPPING[name] || 'help-circle';
   
-  if (iconConfig.lib === 'Ionicons') {
-    return <Ionicons color={color as any} size={size} name={iconConfig.name as any} style={style} />;
-  }
-  
-  return <MaterialIcons color={color as any} size={size} name={iconConfig.name as any} style={style} />;
+  return <Ionicons color={color as any} size={size} name={iconName as any} style={style} />;
 }

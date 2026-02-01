@@ -11,6 +11,7 @@ export const LifeCareStyles = StyleSheet.create({
   // Conteneurs
   container: {
     flex: 1,
+    width: '100%',
     padding: LifeCareSpacing.md,
     backgroundColor: LifeCareTheme.light.background,
   },
@@ -113,23 +114,23 @@ export const LifeCareStyles = StyleSheet.create({
   },
   
   heartRateCard: {
-    borderLeftColor: LifeCareTheme.light.heartRate,
+    borderLeftColor: LifeCareTheme.light.medical.heartRate,
   },
   
   bloodPressureCard: {
-    borderLeftColor: LifeCareTheme.light.bloodPressure,
+    borderLeftColor: LifeCareTheme.light.medical.bloodPressure,
   },
   
   temperatureCard: {
-    borderLeftColor: LifeCareTheme.light.temperature,
+    borderLeftColor: LifeCareTheme.light.medical.temperature,
   },
   
   oxygenCard: {
-    borderLeftColor: LifeCareTheme.light.oxygen,
+    borderLeftColor: LifeCareTheme.light.medical.oxygen,
   },
   
   glucoseCard: {
-    borderLeftColor: LifeCareTheme.light.glucose,
+    borderLeftColor: LifeCareTheme.light.medical.glucose,
   },
   
   // Barre de navigation
@@ -200,6 +201,7 @@ export const LifeCareStyles = StyleSheet.create({
 export const LifeCareDarkStyles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     padding: LifeCareSpacing.md,
     backgroundColor: LifeCareTheme.dark.background,
   },
@@ -287,11 +289,41 @@ export const LifeCareDarkStyles = StyleSheet.create({
     color: LifeCareTheme.dark.textPrimary,
     marginBottom: LifeCareSpacing.xs,
   },
+
+  // Indicateurs médicaux
+  vitalSignCard: {
+    backgroundColor: LifeCareTheme.dark.surface,
+    borderRadius: LifeCareBorderRadius.lg,
+    padding: LifeCareSpacing.md,
+    marginBottom: LifeCareSpacing.sm,
+    borderLeftWidth: 4,
+    ...LifeCareShadows.sm,
+  },
+
+  heartRateCard: {
+    borderLeftColor: LifeCareTheme.dark.medical.heartRate,
+  },
+  
+  bloodPressureCard: {
+    borderLeftColor: LifeCareTheme.dark.medical.bloodPressure,
+  },
+  
+  temperatureCard: {
+    borderLeftColor: LifeCareTheme.dark.medical.temperature,
+  },
+  
+  oxygenCard: {
+    borderLeftColor: LifeCareTheme.dark.medical.oxygen,
+  },
+  
+  glucoseCard: {
+    borderLeftColor: LifeCareTheme.dark.medical.glucose,
+  },
   
   input: {
     backgroundColor: LifeCareTheme.dark.surface,
     borderWidth: 1,
-    borderColor: LifeCareTheme.dark.backgroundSecondary,
+    borderColor: LifeCareTheme.dark.border,
     borderRadius: LifeCareBorderRadius.md,
     paddingHorizontal: LifeCareSpacing.md,
     paddingVertical: LifeCareSpacing.sm,
@@ -310,6 +342,43 @@ export const LifeCareDarkStyles = StyleSheet.create({
     borderTopColor: LifeCareTheme.dark.border,
     paddingBottom: 8,
     paddingTop: 8,
+  },
+
+  // Alertes et notifications
+  alertSuccess: {
+    backgroundColor: LifeCareTheme.dark.success + '20',
+    borderWidth: 1,
+    borderColor: LifeCareTheme.dark.success,
+    borderRadius: LifeCareBorderRadius.md,
+    padding: LifeCareSpacing.md,
+    marginBottom: LifeCareSpacing.md,
+  },
+  
+  alertWarning: {
+    backgroundColor: LifeCareTheme.dark.warning + '20',
+    borderWidth: 1,
+    borderColor: LifeCareTheme.dark.warning,
+    borderRadius: LifeCareBorderRadius.md,
+    padding: LifeCareSpacing.md,
+    marginBottom: LifeCareSpacing.md,
+  },
+  
+  alertError: {
+    backgroundColor: LifeCareTheme.dark.error + '20',
+    borderWidth: 1,
+    borderColor: LifeCareTheme.dark.error,
+    borderRadius: LifeCareBorderRadius.md,
+    padding: LifeCareSpacing.md,
+    marginBottom: LifeCareSpacing.md,
+  },
+  
+  alertInfo: {
+    backgroundColor: LifeCareTheme.dark.info + '20',
+    borderWidth: 1,
+    borderColor: LifeCareTheme.dark.info,
+    borderRadius: LifeCareBorderRadius.md,
+    padding: LifeCareSpacing.md,
+    marginBottom: LifeCareSpacing.md,
   },
 });
 

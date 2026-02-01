@@ -98,32 +98,8 @@ export default function DashboardScreen() {
         <Text variant="subtitle" style={styles.sectionTitle}>Évolution du Service</Text>
         <Card style={styles.chartCard}>
           <Text variant="secondary" style={{ marginBottom: 15 }}>Activité de la semaine</Text>
-          <View style={{ height: 200, flexDirection: 'row' }}>
-            <YAxis
-              data={activityData}
-              contentInset={contentInset}
-              svg={{ fill: 'grey', fontSize: 10 }}
-              numberOfTicks={5}
-              formatLabel={(value) => `${value}`}
-            />
-            <View style={{ flex: 1, marginLeft: 10 }}>
-              <LineChart
-                style={{ flex: 1 }}
-                data={activityData}
-                svg={{ stroke: theme.primary, strokeWidth: 3 }}
-                contentInset={contentInset}
-                curve={shape.curveNatural}
-              >
-                <Grid />
-              </LineChart>
-              <XAxis
-                style={{ marginHorizontal: -10, height: 20 }}
-                data={activityData}
-                formatLabel={(value, index) => ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'][index]}
-                contentInset={{ left: 10, right: 10 }}
-                svg={{ fontSize: 10, fill: 'grey' }}
-              />
-            </View>
+          <View style={{ height: 200, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.backgroundSecondary, borderRadius: 8 }}>
+            <Text variant="secondary">Graphique d'activité temporairement désactivé</Text>
           </View>
         </Card>
       </View>
