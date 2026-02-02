@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Container, Text, Input, Button } from '@/src/presentation/components/atoms';
 import { PatientListItem } from '@/src/presentation/components/molecules/PatientListItem';
@@ -10,7 +10,11 @@ export default function PatientListScreen() {
   const [search, setSearch] = useState('');
   const { theme } = useLifeCareTheme();
   const router = useRouter();
-  const patients = usePatientStore((state) => state.patients);
+  const { patients, fetchPatients, isLoading } = usePatientStore();
+
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
   const calculateAge = (birthDate: string) => {
     const today = new Date();
@@ -56,6 +60,9 @@ export default function PatientListScreen() {
       <FlatList
         data={filteredPatients}
         keyExtractor={item => item.id}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={fetchPatients} tintColor={theme.primary} />
+        }
         renderItem={({ item }) => (
           <PatientListItem
             name={`${item.firstName} ${item.lastName}`}

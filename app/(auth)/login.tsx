@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Container, Text, Input, Button, Logo } from '@/src/presentation/components/atoms';
 import { useLifeCareTheme } from '@/src/presentation/theme';
+import { apiClient } from '@/src/infrastructure/api/api-client';
+import { useAuthStore } from '@/src/application/stores/auth-store';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { theme } = useLifeCareTheme();
   const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
-  const handleLogin = () => {
-    // Statis logic: navigate to dashboard
-    router.replace('/(tabs)');
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await apiClient.post('/auth/login', { email, password });
+      setAuth(response.user, response.token);
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      Alert.alert('Erreur de connexion', error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,6 +61,7 @@ export default function LoginScreen() {
         <Button 
           title="Se connecter" 
           onPress={handleLogin} 
+          loading={isLoading}
           style={{ marginTop: 10 }}
         />
         

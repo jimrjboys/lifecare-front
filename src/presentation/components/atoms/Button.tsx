@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLifeCareTheme } from '../../theme';
 
 interface ButtonProps {
@@ -7,6 +7,7 @@ interface ButtonProps {
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'outline' | 'danger';
   disabled?: boolean;
+  loading?: boolean;
   style?: any;
 }
 
@@ -15,6 +16,7 @@ export const Button: React.FC<ButtonProps> = ({
   onPress, 
   variant = 'primary', 
   disabled = false, 
+  loading = false,
   style 
 }) => {
   const { styles, theme } = useLifeCareTheme();
@@ -33,13 +35,19 @@ export const Button: React.FC<ButtonProps> = ({
     danger: styles.textButton,
   };
   
+  const activityColor = variant === 'outline' ? theme.primary : '#FFFFFF';
+  
   return (
     <TouchableOpacity
-      style={[buttonStyles[variant], style, disabled && { opacity: 0.6 }]}
+      style={[buttonStyles[variant], style, (disabled || loading) && { opacity: 0.6 }]}
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
-      <Text style={textStyles[variant]}>{title}</Text>
+      {loading ? (
+        <ActivityIndicator color={activityColor} />
+      ) : (
+        <Text style={textStyles[variant]}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
