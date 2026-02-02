@@ -1,28 +1,27 @@
+import 'react-native-gesture-handler';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
+import { View, Text } from 'react-native';
 
 import { useLifeCareTheme } from '@/src/presentation/theme';
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  initialRouteName: '(tabs)',
 };
 
 export default function RootLayout() {
-  const { isDark } = useLifeCareTheme();
-
+  console.log('RootLayout rendering...');
+  
   return (
     <SafeAreaProvider>
-      <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
-        <StatusBar style={isDark ? 'light' : 'dark'} />
-      </ThemeProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" options={{ title: 'Welcome' }} />
+        <Stack.Screen name="(auth)/login" options={{ title: 'Login' }} />
+        <Stack.Screen name="(tabs)" options={{ title: 'Dashboard' }} />
+      </Stack>
     </SafeAreaProvider>
   );
 }

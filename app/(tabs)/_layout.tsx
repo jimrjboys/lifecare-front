@@ -7,7 +7,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useLifeCareTheme } from '@/src/presentation/theme';
 
 export default function TabLayout() {
+  console.log('TabLayout rendering...');
   const { theme } = useLifeCareTheme();
+  console.log('TabLayout theme:', theme ? 'ok' : 'missing');
 
   return (
     <Tabs

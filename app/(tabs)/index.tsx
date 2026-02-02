@@ -8,20 +8,10 @@ import { LineChart, Grid, YAxis, XAxis } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 
 export default function DashboardScreen() {
+  console.log('DashboardScreen rendering...');
   const router = useRouter();
   const { theme } = useLifeCareTheme();
-  const patients = usePatientStore((state) => state.patients);
   
-  const stats = [
-    { label: 'Patients', value: patients.length.toString(), icon: '👥' },
-    { label: 'Alertes', value: '1', icon: '⚠️', color: '#e74c3c' },
-    { label: 'Soins dus', value: '8', icon: '📋' },
-  ];
-
-  // Données simulées pour le graphique d'activité
-  const activityData = [10, 25, 18, 40, 32, 55, 45];
-  const contentInset = { top: 20, bottom: 20 };
-
   return (
     <Container scrollable>
       <View style={styles.header}>
@@ -29,79 +19,9 @@ export default function DashboardScreen() {
           <Text variant="title">Bonjour, Dr. Martin</Text>
           <Text variant="secondary">Lundi 1 Février 2026</Text>
         </View>
-        <TouchableOpacity 
-          style={[styles.profileButton, { backgroundColor: theme.primary + '20' }]}
-          onPress={() => router.push('/(tabs)/settings')}
-        >
-          <Text style={{ fontSize: 20 }}>👨‍⚕️</Text>
-        </TouchableOpacity>
       </View>
-
-      <View style={styles.statsGrid}>
-        {stats.map((stat, index) => (
-          <Card key={index} style={styles.statCard}>
-            <Text style={{ fontSize: 24, marginBottom: 8 }}>{stat.icon}</Text>
-            <Text style={[styles.statValue, stat.color ? { color: stat.color } : {}]}>{stat.value}</Text>
-            <Text variant="caption">{stat.label}</Text>
-          </Card>
-        ))}
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text variant="subtitle">Alertes Urgentes</Text>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={{ color: theme.primary }}>Voir tout</Text>
-          </TouchableOpacity>
-        </View>
-        
-        <Card style={[styles.alertCard, { borderLeftColor: theme.error }]}>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontWeight: 'bold' }}>Robert Martin (Ch. 312)</Text>
-            <Text variant="caption">Tension critique : 180/110 mmHg</Text>
-          </View>
-          <Button 
-            title="Agir" 
-            onPress={() => router.push('/(tabs)/patients/3')} 
-            style={{ paddingVertical: 6, paddingHorizontal: 12 }}
-          />
-        </Card>
-      </View>
-
-      <View style={styles.section}>
-        <Text variant="subtitle" style={styles.sectionTitle}>Accès Rapide</Text>
-        <View style={styles.quickActions}>
-          <QuickActionButton 
-            label="Patients" 
-            icon="👥" 
-            onPress={() => router.push('/(tabs)/patients')} 
-          />
-          <QuickActionButton 
-            label="Scanner" 
-            icon="📸" 
-            onPress={() => router.push('/(tabs)/medication/admin')} 
-          />
-          <QuickActionButton 
-            label="IA" 
-            icon="🧠" 
-            onPress={() => router.push('/(tabs)/medical/ai-evaluation')} 
-          />
-          <QuickActionButton 
-            label="Factures" 
-            icon="💳" 
-            onPress={() => router.push('/(tabs)/finance/invoice-new')} 
-          />
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text variant="subtitle" style={styles.sectionTitle}>Évolution du Service</Text>
-        <Card style={styles.chartCard}>
-          <Text variant="secondary" style={{ marginBottom: 15 }}>Activité de la semaine</Text>
-          <View style={{ height: 200, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.backgroundSecondary, borderRadius: 8 }}>
-            <Text variant="secondary">Graphique d'activité temporairement désactivé</Text>
-          </View>
-        </Card>
+      <View style={{ padding: 20 }}>
+        <Text>Dashboard is working!</Text>
       </View>
     </Container>
   );
