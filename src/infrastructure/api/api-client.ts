@@ -1,11 +1,11 @@
-import { useAuthStore } from '../../application/stores/auth-store';
+import { useAuthStore } from '@/src/application/stores/auth-store';
 
-const BASE_URL = 'http://localhost:3000/api'; // Ajustez si nécessaire pour Android (10.0.2.2)
+const BASE_URL = 'http://localhost:3000/api';
 
-export const apiClient = {
-  async request(endpoint: string, options: RequestInit = {}) {
+class ApiClient {
+  private async request(endpoint: string, options: RequestInit = {}) {
     const token = useAuthStore.getState().token;
-
+    
     const headers = {
       'Content-Type': 'application/json',
       ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
@@ -17,36 +17,36 @@ export const apiClient = {
       headers,
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      throw new Error(data.error || 'Une erreur est survenue');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `API Error: ${response.status}`);
     }
 
-    return data;
-  },
+    if (response.status === 204) return null;
+    return response.json();
+  }
 
-  get(endpoint: string, options: RequestInit = {}) {
-    return this.request(endpoint, { ...options, method: 'GET' });
-  },
+  async get(endpoint: string) {
+    return this.request(endpoint, { method: 'GET' });
+  }
 
-  post(endpoint: string, body: any, options: RequestInit = {}) {
+  async post(endpoint: string, body: any) {
     return this.request(endpoint, {
-      ...options,
       method: 'POST',
       body: JSON.stringify(body),
     });
-  },
+  }
 
-  patch(endpoint: string, body: any, options: RequestInit = {}) {
+  async patch(endpoint: string, body: any) {
     return this.request(endpoint, {
-      ...options,
       method: 'PATCH',
       body: JSON.stringify(body),
     });
-  },
+  }
 
-  delete(endpoint: string, options: RequestInit = {}) {
-    return this.request(endpoint, { ...options, method: 'DELETE' });
-  },
-};
+  async delete(endpoint: string) {
+    return this.request(endpoint, { method: 'DELETE' });
+  }
+}
+
+export const apiClient = new ApiClient();

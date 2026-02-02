@@ -18,7 +18,7 @@ interface PatientState {
   administerMedication: (patientId: string, administration: Omit<MedicationAdministration, 'id' | 'patientId' | 'timestamp'>) => Promise<void>;
 }
 
-export const usePatientStore = create<PatientState>((set, get) => ({
+export const usePatientStore = create<PatientState>((set) => ({
   patients: [],
   selectedPatientId: null,
   isLoading: false,
@@ -97,8 +97,13 @@ export const usePatientStore = create<PatientState>((set, get) => ({
   },
 
   administerMedication: async (patientId, administrationData) => {
-    // Logic for medication administration API can be added similarly
-    // For now, we'll just keep it as a placeholder as the backend needs specific routes for this
-    console.log('Administering medication:', administrationData);
+    set({ isLoading: true, error: null });
+    try {
+      await apiClient.post(`/medical/administration/${patientId}`, administrationData);
+      // Optionnel: Re-fetch ou mise à jour locale de l'état si nécessaire
+      set({ isLoading: false });
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+    }
   },
 }));
