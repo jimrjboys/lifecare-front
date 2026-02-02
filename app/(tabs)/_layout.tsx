@@ -53,7 +53,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="finance/invoice-new"
+        name="finance/index"
         options={{
           title: 'Factures',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="creditcard.fill" color={color} />,
@@ -67,10 +67,15 @@ export default function TabLayout() {
         }}
       />
       
-      {/* Masquer les routes de détail des onglets si nécessaire, mais ici elles sont dans des sous-dossiers */}
+      {/* Masquer les routes internes et de détail du menu des onglets */}
       <Tabs.Screen name="patients/[id]" options={{ href: null }} />
+      <Tabs.Screen name="patients/new" options={{ href: null }} />
+      <Tabs.Screen name="medical/vitals/index" options={{ href: null }} />
+      <Tabs.Screen name="medical/vitals/new" options={{ href: null }} />
       <Tabs.Screen name="medical/ai-evaluation" options={{ href: null }} />
       <Tabs.Screen name="medication/admin" options={{ href: null }} />
+      <Tabs.Screen name="medication/prescription" options={{ href: null }} />
+      <Tabs.Screen name="finance/invoice-new" options={{ href: null }} />
       <Tabs.Screen name="explore" options={{ href: null }} />
     </Tabs>
   );
