@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Container, Text, Input, Button } from '@/src/presentation/components/atoms';
+import { Container, Text, Input, Button, Card } from '@/src/presentation/components/atoms';
 import { useLifeCareTheme } from '@/src/presentation/theme';
 import { usePatientStore } from '@/src/application/stores/patient-store';
 
@@ -15,145 +15,137 @@ export default function NewPatientScreen() {
     lastName: '',
     birthDate: '',
     gender: 'M' as 'M' | 'F' | 'O',
+    room: '',
     socialSecurityNumber: '',
-    phone: '',
-    email: '',
-    address: '',
     bloodType: '',
+    allergies: '',
+    conditions: '',
   });
 
   const handleSave = () => {
-    if (!form.firstName || !form.lastName || !form.birthDate) {
-      Alert.alert('Erreur', 'Veuillez remplir les champs obligatoires (Prénom, Nom, Date de naissance)');
+    if (!form.firstName || !form.lastName || !form.room) {
+      Alert.alert('Erreur', 'Veuillez remplir les champs obligatoires (Nom, Prénom, Chambre).');
       return;
     }
 
-    addPatient(form);
-    Alert.alert('Succès', 'Patient ajouté avec succès', [
+    addPatient({
+      firstName: form.firstName,
+      lastName: form.lastName,
+      birthDate: form.birthDate || new Date().toISOString().split('T')[0],
+      gender: form.gender,
+      room: form.room,
+      socialSecurityNumber: form.socialSecurityNumber,
+      bloodType: form.bloodType,
+      allergies: form.allergies ? form.allergies.split(',').map(s => s.trim()) : [],
+      conditions: form.conditions ? form.conditions.split(',').map(s => s.trim()) : [],
+    });
+
+    Alert.alert('Succès', 'Patient admis avec succès.', [
       { text: 'OK', onPress: () => router.back() }
     ]);
   };
 
   return (
-    <Container>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text variant="title" style={styles.title}>Nouveau Patient</Text>
-        <Text variant="secondary" style={styles.subtitle}>Informations administratives</Text>
+    <Container scrollable>
+      <Text variant="title" style={{ marginVertical: 20 }}>Admission Patient</Text>
 
-        <View style={styles.form}>
-          <Input
-            label="Nom *"
-            placeholder="Ex: Dupont"
-            value={form.lastName}
-            onChangeText={(text) => setForm({ ...form, lastName: text })}
-          />
-          <Input
-            label="Prénom *"
-            placeholder="Ex: Jean"
-            value={form.firstName}
-            onChangeText={(text) => setForm({ ...form, firstName: text })}
-          />
-          <Input
-            label="Date de naissance (AAAA-MM-JJ) *"
-            placeholder="1990-01-01"
-            value={form.birthDate}
-            onChangeText={(text) => setForm({ ...form, birthDate: text })}
-          />
-          
-          <View style={styles.genderContainer}>
-            <Text style={styles.label}>Genre</Text>
-            <View style={styles.row}>
-              {(['M', 'F', 'O'] as const).map((g) => (
-                <Button
-                  key={g}
-                  title={g === 'M' ? 'Homme' : g === 'F' ? 'Femme' : 'Autre'}
-                  variant={form.gender === g ? 'primary' : 'outline'}
-                  onPress={() => setForm({ ...form, gender: g })}
-                  style={styles.genderButton}
-                />
-              ))}
-            </View>
-          </View>
+      <Card style={styles.card}>
+        <Text variant="subtitle" style={styles.sectionTitle}>Informations Personnelles</Text>
+        <Input
+          label="Nom *"
+          placeholder="Ex: Dupont"
+          value={form.lastName}
+          onChangeText={(v) => setForm({ ...form, lastName: v })}
+        />
+        <Input
+          label="Prénom *"
+          placeholder="Ex: Jean"
+          value={form.firstName}
+          onChangeText={(v) => setForm({ ...form, firstName: v })}
+        />
+        <Input
+          label="Date de naissance"
+          placeholder="AAAA-MM-JJ"
+          value={form.birthDate}
+          onChangeText={(v) => setForm({ ...form, birthDate: v })}
+        />
+        <View style={styles.row}>
+            <Text style={{ marginRight: 10 }}>Genre :</Text>
+            <Button 
+                title="M" 
+                variant={form.gender === 'M' ? 'primary' : 'outline'} 
+                onPress={() => setForm({...form, gender: 'M'})}
+                style={styles.genderButton}
+            />
+            <Button 
+                title="F" 
+                variant={form.gender === 'F' ? 'primary' : 'outline'} 
+                onPress={() => setForm({...form, gender: 'F'})}
+                style={styles.genderButton}
+            />
+        </View>
+      </Card>
 
-          <Input
-            label="Numéro de Sécurité Sociale"
-            placeholder="1 90 01 ..."
-            value={form.socialSecurityNumber}
-            onChangeText={(text) => setForm({ ...form, socialSecurityNumber: text })}
-            keyboardType="numeric"
-          />
+      <Card style={styles.card}>
+        <Text variant="subtitle" style={styles.sectionTitle}>Détails Médicaux</Text>
+        <Input
+          label="Chambre *"
+          placeholder="Ex: 302"
+          value={form.room}
+          onChangeText={(v) => setForm({ ...form, room: v })}
+        />
+        <Input
+          label="Groupe Sanguin"
+          placeholder="Ex: A+"
+          value={form.bloodType}
+          onChangeText={(v) => setForm({ ...form, bloodType: v })}
+        />
+        <Input
+          label="Allergies (séparées par des virgules)"
+          placeholder="Ex: Pénicilline, Pollen"
+          value={form.allergies}
+          onChangeText={(v) => setForm({ ...form, allergies: v })}
+        />
+        <Input
+          label="Pathologies (séparées par des virgules)"
+          placeholder="Ex: Diabète, Hypertension"
+          value={form.conditions}
+          onChangeText={(v) => setForm({ ...form, conditions: v })}
+        />
+      </Card>
 
-          <Input
-            label="Téléphone"
-            placeholder="06 12 34 56 78"
-            value={form.phone}
-            onChangeText={(text) => setForm({ ...form, phone: text })}
-            keyboardType="phone-pad"
-          />
-
-          <Input
-            label="Email"
-            placeholder="patient@email.com"
-            value={form.email}
-            onChangeText={(text) => setForm({ ...form, email: text })}
-            keyboardType="email-address"
-          />
-
-          <Input
-            label="Groupe Sanguin"
-            placeholder="Ex: A+"
-            value={form.bloodType}
-            onChangeText={(text) => setForm({ ...form, bloodType: text })}
-          />
-
-          <Button 
-            title="Enregistrer le Patient" 
-            onPress={handleSave} 
-            style={styles.saveButton}
-          />
-          <Button 
+      <View style={styles.actions}>
+        <Button title="Admettre le patient" onPress={handleSave} />
+        <Button 
             title="Annuler" 
             variant="outline" 
             onPress={() => router.back()} 
-          />
-        </View>
-      </ScrollView>
+            style={{ marginTop: 12 }}
+        />
+      </View>
     </Container>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
+  card: {
+    marginBottom: 20,
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  subtitle: {
-    marginBottom: 24,
-  },
-  form: {
-    gap: 16,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#333',
-  },
-  genderContainer: {
-    marginBottom: 8,
+  sectionTitle: {
+    marginBottom: 16,
   },
   row: {
     flexDirection: 'row',
-    gap: 8,
+    alignItems: 'center',
+    marginTop: 8,
   },
   genderButton: {
-    flex: 1,
+    paddingVertical: 4,
+    paddingHorizontal: 16,
+    marginRight: 8,
+    minWidth: 50,
   },
-  saveButton: {
-    marginTop: 20,
-  },
+  actions: {
+    marginBottom: 40,
+  }
 });
