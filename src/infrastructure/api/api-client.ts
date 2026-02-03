@@ -1,6 +1,10 @@
+import { Platform } from 'react-native';
 import { useAuthStore } from '@/src/application/stores/auth-store';
 
-const BASE_URL = 'http://localhost:3000/api';
+// Sur Android Emulator, localhost est 10.0.2.2. Sur Web/iOS, c'est localhost.
+const BASE_URL = Platform.OS === 'android' 
+  ? 'http://10.0.2.2:3000/api' 
+  : 'http://localhost:3000/api';
 
 class ApiClient {
   private async request(endpoint: string, options: RequestInit = {}) {
@@ -19,7 +23,7 @@ class ApiClient {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `API Error: ${response.status}`);
+      throw new Error(errorData.error || errorData.message || `API Error: ${response.status}`);
     }
 
     if (response.status === 204) return null;

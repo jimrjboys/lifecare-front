@@ -1,116 +1,114 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Container, Text, Input, Button, Logo } from '@/src/presentation/components/atoms';
-import { useLifeCareTheme } from '@/src/presentation/theme';
-import { apiClient } from '@/src/infrastructure/api/api-client';
-import { useAuthStore } from '@/src/application/stores/auth-store';
+import { Platform, View } from 'react-native';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('andryjimmyras@gmail.com');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { theme } = useLifeCareTheme();
-  const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Erreur', 'Veuillez remplir tous les champs');
-      return;
-    }
+  const handleLogin = (e: any) => {
+    e.preventDefault();
+    console.log('Tentative de connexion...');
     
-    setIsLoading(true);
-    try {
-      const response = await apiClient.post('/auth/login', { email, password });
-      setAuth(response.user, response.token);
-      router.replace('/(tabs)');
-    } catch (error: any) {
-      Alert.alert('Erreur de connexion', error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    fetch('http://localhost:3000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.token) {
+        localStorage.setItem('auth-storage', JSON.stringify({
+          state: { user: data.user, token: data.token }
+        }));
+        window.location.href = '/(tabs)';
+      } else {
+        alert('Erreur: ' + (data.message || 'Identifiants invalides'));
+      }
+    })
+    .catch(err => {
+      console.error('Login error:', err);
+      alert('Erreur de connexion au serveur');
+    });
   };
 
-  return (
-    <Container style={styles.container}>
-      <View style={styles.logoContainer}>
-        <View style={styles.logoWrapper}>
-          <Logo size={120} />
-        </View>
-        <Text variant="title" style={styles.title}>LifeCare</Text>
-        <Text variant="secondary">Solution Médicale Intégrée</Text>
-      </View>
-
-      <View style={styles.form}>
-        <Input
-          label="Email Professionnel"
-          placeholder="nom@hopital.com"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-        <Input
-          label="Mot de passe"
-          placeholder="••••••••"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        
-        <Button 
-          title="Se connecter" 
-          onPress={handleLogin} 
-          loading={isLoading}
-          style={{ marginTop: 10 }}
-        />
-        
-        <Button 
-          title="Authentification Biométrique" 
-          variant="outline" 
-          onPress={() => {}} 
-          style={{ marginTop: 16 }}
-        />
-      </View>
-
-      <View style={styles.footer}>
-        <Text variant="caption">Version 1.0.0 • Mode Hors-ligne disponible</Text>
-      </View>
-    </Container>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  logoWrapper: {
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  form: {
-    width: '100%',
-  },
-  footer: {
-    marginTop: 40,
-    alignItems: 'center',
+  if (Platform.OS === 'web') {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        width: '100vw',
+        backgroundColor: '#f5f5f5',
+        fontFamily: 'system-ui, sans-serif'
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          padding: '40px',
+          borderRadius: '20px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          width: '100%',
+          maxWidth: '400px',
+          textAlign: 'center'
+        }}>
+          <h1 style={{ color: '#0077B6', marginBottom: '10px' }}>LifeCare</h1>
+          <p style={{ color: '#666', marginBottom: '30px' }}>Votre santé, notre priorité</p>
+          
+          <form onSubmit={handleLogin} style={{ textAlign: 'left' }}>
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', color: '#444' }}>Email</label>
+              <input 
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #ddd',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            
+            <div style={{ marginBottom: '30px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', color: '#444' }}>Mot de passe</label>
+              <input 
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #ddd',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            
+            <button 
+              type="submit"
+              style={{
+                width: '100%',
+                padding: '15px',
+                borderRadius: '25px',
+                backgroundColor: '#0077B6',
+                color: 'white',
+                border: 'none',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+            >
+              Se connecter
+            </button>
+          </form>
+        </div>
+      </div>
+    );
   }
-});
+
+  return <View />;
+}
