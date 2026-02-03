@@ -68,7 +68,7 @@ export default function PatientListScreen() {
             name={`${item.firstName} ${item.lastName}`}
             age={calculateAge(item.birthDate)}
             gender={item.gender}
-            room="-" // Serait ajouté plus tard
+            room={item.room || "-"}
             status={getPatientStatus(item)}
             onPress={() => router.push(`/(tabs)/patients/${item.id}`)}
           />

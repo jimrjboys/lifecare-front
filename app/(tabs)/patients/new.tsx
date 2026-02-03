@@ -22,27 +22,31 @@ export default function NewPatientScreen() {
     conditions: '',
   });
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.firstName || !form.lastName || !form.room) {
       Alert.alert('Erreur', 'Veuillez remplir les champs obligatoires (Nom, Prénom, Chambre).');
       return;
     }
 
-    addPatient({
-      firstName: form.firstName,
-      lastName: form.lastName,
-      birthDate: form.birthDate || new Date().toISOString().split('T')[0],
-      gender: form.gender,
-      room: form.room,
-      socialSecurityNumber: form.socialSecurityNumber,
-      bloodType: form.bloodType,
-      allergies: form.allergies ? form.allergies.split(',').map(s => s.trim()) : [],
-      conditions: form.conditions ? form.conditions.split(',').map(s => s.trim()) : [],
-    });
+    try {
+      await addPatient({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        birthDate: form.birthDate || new Date().toISOString().split('T')[0],
+        gender: form.gender,
+        room: form.room,
+        socialSecurityNumber: form.socialSecurityNumber,
+        bloodType: form.bloodType,
+        allergies: form.allergies ? form.allergies.split(',').map(s => s.trim()) : [],
+        conditions: form.conditions ? form.conditions.split(',').map(s => s.trim()) : [],
+      });
 
-    Alert.alert('Succès', 'Patient admis avec succès.', [
-      { text: 'OK', onPress: () => router.back() }
-    ]);
+      Alert.alert('Succès', 'Patient admis avec succès.', [
+        { text: 'OK', onPress: () => router.replace('/(tabs)/patients') }
+      ]);
+    } catch (error) {
+      Alert.alert('Erreur', 'Une erreur est survenue lors de l\'ajout du patient.');
+    }
   };
 
   return (
