@@ -1,38 +1,100 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { View, StyleSheet, ImageBackground } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Container, Text, Button, Logo } from '@/src/presentation/components/atoms';
+import { useLifeCareTheme } from '@/src/presentation/theme';
 
-export default function Index() {
-  if (Platform.OS === 'web') {
-    return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        width: '100vw',
-        backgroundColor: '#ffffff',
-        fontFamily: 'system-ui, -apple-system, sans-serif'
-      }}>
-        <h1 style={{ color: '#0077B6', fontSize: '3rem', marginBottom: '2rem' }}>LifeCare</h1>
-        <button 
-          onClick={() => window.location.href = '/login'}
-          style={{
-            backgroundColor: '#0077B6',
-            padding: '15px 30px',
-            borderRadius: '10px',
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '16px',
-            border: 'none',
-            cursor: 'pointer'
-          }}
-        >
-          ACCÉDER À LA CONNEXION
-        </button>
-      </div>
-    );
-  }
+export default function WelcomeScreen() {
+  const router = useRouter();
+  const { theme } = useLifeCareTheme();
 
-  return null;
+  return (
+    <Container scrollable={false} style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.logoContainer}>
+          <Logo size={120} />
+        </View>
+        
+        <View style={styles.textContainer}>
+          <Text variant="title" style={styles.title}>LifeCare</Text>
+          <Text variant="subtitle" style={styles.subtitle}>
+            Intelligence Artificielle & Gestion Médicale
+          </Text>
+          <Text variant="body" style={styles.description}>
+            La plateforme de santé nouvelle génération pour les professionnels.
+          </Text>
+        </View>
+
+        <View style={styles.footer}>
+          <Button 
+            title="DÉMARRER" 
+            onPress={() => router.push('/(auth)/login')} 
+            style={styles.button}
+          />
+          <Text variant="caption" style={styles.version}>v1.0.0 Premium</Text>
+        </View>
+      </View>
+    </Container>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+  },
+  content: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 450,
+    padding: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoContainer: {
+    marginBottom: 40,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginBottom: 60,
+  },
+  title: {
+    fontSize: 42,
+    fontWeight: 'bold',
+    color: '#0077B6',
+    letterSpacing: 1,
+  },
+  subtitle: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 10,
+    color: '#00B4D8',
+    fontWeight: '600',
+  },
+  description: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#666',
+    lineHeight: 24,
+  },
+  footer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  button: {
+    width: '100%',
+    height: 55,
+    borderRadius: 30,
+  },
+  version: {
+    marginTop: 20,
+    color: '#999',
+  }
+});

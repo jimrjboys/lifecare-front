@@ -6,17 +6,32 @@ interface ContainerProps {
   children: React.ReactNode;
   scrollable?: boolean;
   style?: any;
+  contentContainerStyle?: any;
 }
 
-export const Container: React.FC<ContainerProps> = ({ children, scrollable = true, style }) => {
+export const Container: React.FC<ContainerProps> = ({ 
+  children, 
+  scrollable = true, 
+  style,
+  contentContainerStyle
+}) => {
   const { styles: themeStyles, theme, isDark } = useLifeCareTheme();
   
+  if (!scrollable) {
+    return (
+      <View style={[styles.wrapper, { backgroundColor: theme.background }, style]}>
+        <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+        {children}
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.wrapper, { backgroundColor: theme.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <ScrollView 
         style={[themeStyles.container, style]}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >

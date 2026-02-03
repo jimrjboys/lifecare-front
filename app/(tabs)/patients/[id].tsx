@@ -38,13 +38,29 @@ export default function PatientProfileScreen() {
   return (
     <Container scrollable>
       <View style={styles.header}>
-        <View style={[styles.avatar, { backgroundColor: theme.primary }]}>
-          <Text style={{ color: theme.textOnPrimary, fontSize: 32, fontWeight: 'bold' }}>
+        <View style={[styles.avatar, { backgroundColor: theme.primary, shadowColor: theme.primary }]}>
+          <Text style={{ color: theme.textOnPrimary, fontSize: 36, fontWeight: 'bold' }}>
             {patient.firstName[0]}{patient.lastName[0]}
           </Text>
         </View>
-        <Text variant="title" style={{ marginTop: 12 }}>{patient.firstName} {patient.lastName}</Text>
-        <Text variant="secondary">{patient.gender === 'M' ? 'Masculin' : 'Féminin'}, {age} ans • Chambre {patient.room || 'N/A'}</Text>
+        <Text variant="title" style={{ marginTop: 16, fontSize: 24 }}>{patient.firstName} {patient.lastName}</Text>
+        <View style={styles.badgeContainer}>
+           <View style={[styles.badge, { backgroundColor: theme.backgroundSecondary }]}>
+             <Text variant="caption" style={{ color: theme.textSecondary, fontWeight: '600' }}>
+               {patient.gender === 'M' ? 'HOMME' : 'FEMME'}
+             </Text>
+           </View>
+           <View style={[styles.badge, { backgroundColor: theme.backgroundSecondary }]}>
+             <Text variant="caption" style={{ color: theme.textSecondary, fontWeight: '600' }}>
+               {age} ANS
+             </Text>
+           </View>
+           <View style={[styles.badge, { backgroundColor: theme.primary + '20' }]}>
+             <Text variant="caption" style={{ color: theme.primary, fontWeight: 'bold' }}>
+               CHAMBRE {patient.room || 'N/A'}
+             </Text>
+           </View>
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -124,14 +140,29 @@ export default function PatientProfileScreen() {
 const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 30,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 10,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  badgeContainer: {
+    flexDirection: 'row',
+    marginTop: 12,
+    gap: 8,
+  },
+  badge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
   section: {
     marginBottom: 24,

@@ -1,114 +1,152 @@
 import React, { useState } from 'react';
-import { Platform, View } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Container, Text, Input, Button, Logo } from '@/src/presentation/components/atoms';
+import { useLifeCareTheme } from '@/src/presentation/theme';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('andryjimmyras@gmail.com');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const router = useRouter();
+  const { theme } = useLifeCareTheme();
 
-  const handleLogin = (e: any) => {
-    e.preventDefault();
+  const handleLogin = async () => {
+    if (!email || !password) {
+      if (Platform.OS === 'web') alert('Veuillez remplir tous les champs');
+      else Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      return;
+    }
+
+    setIsLoading(true);
     console.log('Tentative de connexion...');
     
-    fetch('http://localhost:3000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    })
-    .then(res => res.json())
-    .then(data => {
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+      
       if (data.token) {
-        localStorage.setItem('auth-storage', JSON.stringify({
-          state: { user: data.user, token: data.token }
-        }));
-        window.location.href = '/(tabs)';
+        if (Platform.OS === 'web') {
+          localStorage.setItem('auth-storage', JSON.stringify({
+            state: { user: data.user, token: data.token }
+          }));
+          window.location.href = '/(tabs)';
+        } else {
+          // Pour mobile, on utiliserait le store Zustand
+          // Mais pour l'instant on garde la redirection web-first
+          router.replace('/(tabs)');
+        }
       } else {
-        alert('Erreur: ' + (data.message || 'Identifiants invalides'));
+        const errorMsg = data.message || 'Identifiants invalides';
+        if (Platform.OS === 'web') alert('Erreur: ' + errorMsg);
+        else Alert.alert('Erreur', errorMsg);
       }
-    })
-    .catch(err => {
+    } catch (err) {
       console.error('Login error:', err);
-      alert('Erreur de connexion au serveur');
-    });
+      if (Platform.OS === 'web') alert('Erreur de connexion au serveur');
+      else Alert.alert('Erreur', 'Impossible de contacter le serveur');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  if (Platform.OS === 'web') {
-    return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        width: '100vw',
-        backgroundColor: '#f5f5f5',
-        fontFamily: 'system-ui, sans-serif'
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          padding: '40px',
-          borderRadius: '20px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          width: '100%',
-          maxWidth: '400px',
-          textAlign: 'center'
-        }}>
-          <h1 style={{ color: '#0077B6', marginBottom: '10px' }}>LifeCare</h1>
-          <p style={{ color: '#666', marginBottom: '30px' }}>Votre santé, notre priorité</p>
-          
-          <form onSubmit={handleLogin} style={{ textAlign: 'left' }}>
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', color: '#444' }}>Email</label>
-              <input 
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: '1px solid #ddd',
-                  boxSizing: 'border-box'
-                }}
-              />
-            </div>
-            
-            <div style={{ marginBottom: '30px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', color: '#444' }}>Mot de passe</label>
-              <input 
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: '1px solid #ddd',
-                  boxSizing: 'border-box'
-                }}
-              />
-            </div>
-            
-            <button 
-              type="submit"
-              style={{
-                width: '100%',
-                padding: '15px',
-                borderRadius: '25px',
-                backgroundColor: '#0077B6',
-                color: 'white',
-                border: 'none',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
-            >
-              Se connecter
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
+  return (
+    <Container scrollable={false} style={styles.container}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1, width: '100%', justifyContent: 'center' }}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent} 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.header}>
+            <Logo size={80} />
+            <Text variant="title" style={styles.title}>Connexion</Text>
+            <Text variant="body" style={styles.subtitle}>Accédez à votre espace professionnel LifeCare</Text>
+          </View>
 
-  return <View />;
+          <View style={styles.form}>
+            <Input
+              label="Email"
+              placeholder="votre@email.com"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <Input
+              label="Mot de passe"
+              placeholder="••••••••"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text variant="caption" style={{ color: theme.primary, fontWeight: 'bold' }}>
+                Mot de passe oublié ?
+              </Text>
+            </TouchableOpacity>
+
+            <Button 
+              title={isLoading ? "Connexion en cours..." : "SE CONNECTER"} 
+              onPress={handleLogin}
+              style={styles.loginButton}
+              disabled={isLoading}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Container>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollContent: {
+    paddingHorizontal: 30,
+    paddingVertical: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100%',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginTop: 20,
+    color: '#333',
+  },
+  subtitle: {
+    textAlign: 'center',
+    marginTop: 10,
+    color: '#777',
+  },
+  form: {
+    width: '100%',
+    maxWidth: 400,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginBottom: 25,
+  },
+  loginButton: {
+    height: 55,
+    borderRadius: 12,
+    marginTop: 10,
+  }
+});
