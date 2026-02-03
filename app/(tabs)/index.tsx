@@ -33,7 +33,9 @@ export default function DashboardScreen() {
       <View style={styles.header}>
         <View>
           <Text style={themeStyles.textSecondary}>Bonjour,</Text>
-          <Text style={themeStyles.titleLarge}>{user?.name || 'Utilisateur'}</Text>
+          <Text style={themeStyles.titleLarge}>
+            {user ? `${user.firstName} ${user.lastName}` : 'Utilisateur'}
+          </Text>
         </View>
         <TouchableOpacity 
           onPress={handleLogout}
