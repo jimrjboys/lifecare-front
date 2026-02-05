@@ -1,17 +1,34 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Container, Text, Card, Button } from '@/src/presentation/components/atoms';
 import { useLifeCareTheme } from '@/src/presentation/theme';
 import { usePatientStore } from '@/src/application/stores/patient-store';
+import { apiClient } from '@/src/infrastructure/api/api-client';
 
 export default function PatientProfileScreen() {
   const { id } = useLocalSearchParams();
   const { theme, styles: themeStyles } = useLifeCareTheme();
   const router = useRouter();
   
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
   const patients = usePatientStore((state) => state.patients);
   const patient = patients.find(p => p.id === id);
+
+  const handleGenerateAiSummary = async () => {
+    setIsAiLoading(true);
+    try {
+      const response = await apiClient.get(`/medical/ai-summary/${id}`);
+      setAiSummary(response.summary);
+    } catch (error) {
+      console.error("AI Summary Error:", error);
+      setAiSummary("Erreur lors de la génération de la synthèse.");
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   if (!patient) {
     return (
@@ -82,6 +99,38 @@ export default function PatientProfileScreen() {
             <Text variant="secondary">Conditions</Text>
             <Text style={{ textAlign: 'right', flex: 1, color: theme.textPrimary }}>{patient.conditions?.join(', ') || 'Aucune'}</Text>
           </View>
+        </Card>
+      </View>
+
+      <View style={styles.section}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <Text variant="subtitle">Assistant IA LifeCare</Text>
+          <Button 
+            title={aiSummary ? "Régénérer" : "Générer Synthèse"} 
+            variant="outline" 
+            onPress={handleGenerateAiSummary}
+            disabled={isAiLoading}
+            style={{ paddingVertical: 4, paddingHorizontal: 12 }}
+          />
+        </View>
+        <Card style={[styles.aiCard, { backgroundColor: theme.primary + '05', borderColor: theme.primary + '20' }]}>
+          {isAiLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator color={theme.primary} />
+              <Text variant="caption" style={{ marginTop: 8 }}>Analyse des données en cours...</Text>
+            </View>
+          ) : aiSummary ? (
+            <View>
+              <Text style={styles.aiText}>{aiSummary}</Text>
+              <Text variant="caption" style={{ marginTop: 12, fontStyle: 'italic', color: theme.textSecondary }}>
+                Généré par DeepSeek RAG basé sur l'historique médical.
+              </Text>
+            </View>
+          ) : (
+            <Text variant="secondary" style={{ fontStyle: 'italic' }}>
+              Cliquez sur "Générer Synthèse" pour obtenir un résumé intelligent des soins récents.
+            </Text>
+          )}
         </Card>
       </View>
 

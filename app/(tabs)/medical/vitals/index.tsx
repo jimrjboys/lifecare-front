@@ -88,7 +88,7 @@ export default function VitalsHistoryScreen() {
           <Text variant="secondary">Aucun historique disponible.</Text>
           <Button 
             title="Saisir des constantes" 
-            onPress={() => router.push({ pathname: '/(tabs)/medical/vitals/new', params: { id: patient.id } })}
+            onPress={() => router.push({ pathname: '/medical/vitals/new', params: { id: patient.id } })}
             style={{ marginTop: 20 }}
           />
         </View>

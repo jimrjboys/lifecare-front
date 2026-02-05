@@ -66,13 +66,19 @@ export default function DashboardScreen() {
           <Text>Chargement...</Text>
         ) : (
           patients.slice(0, 3).map((patient) => (
-            <Card key={patient.id} style={styles.patientCard}>
-              <View>
-                <Text style={{ fontWeight: '600' }}>{patient.firstName} {patient.lastName}</Text>
-                <Text style={themeStyles.textSecondary}>{patient.condition || 'Suivi général'}</Text>
-              </View>
-              <Text style={{ color: theme.primary }}>Détails</Text>
-            </Card>
+            <TouchableOpacity 
+              key={patient.id} 
+              onPress={() => router.push(`/(tabs)/patients/${patient.id}`)}
+              activeOpacity={0.7}
+            >
+              <Card style={styles.patientCard}>
+                <View>
+                  <Text style={{ fontWeight: '600' }}>{patient.firstName} {patient.lastName}</Text>
+                  <Text style={themeStyles.textSecondary}>{patient.condition || 'Suivi général'}</Text>
+                </View>
+                <Text style={{ color: theme.primary, fontWeight: '600' }}>Détails</Text>
+              </Card>
+            </TouchableOpacity>
           ))
         )}
       </View>

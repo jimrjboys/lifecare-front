@@ -53,7 +53,7 @@ export default function MedicalDashboardScreen() {
               </View>
               <Button 
                 title="Constantes" 
-                onPress={() => router.push({ pathname: '/(tabs)/medical/vitals/index', params: { id: item.id } })}
+                onPress={() => router.push({ pathname: '/medical/vitals', params: { id: item.id } })}
                 style={{ paddingVertical: 6, paddingHorizontal: 12 }}
               />
             </Card>
