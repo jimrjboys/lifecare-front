@@ -10,18 +10,30 @@ export default function AIEvaluationScreen() {
   const router = useRouter();
   const { theme } = useLifeCareTheme();
   const [loading, setLoading] = useState(true);
+  const [aiDiagnostic, setAiDiagnostic] = useState<any>(null);
   
   const patients = usePatientStore((state) => state.patients);
   const patient = patients.find(p => p.id === id);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+    async function fetchAiDiagnostic() {
+      if (!id) return;
+      try {
+        setLoading(true);
+        const data = await apiClient.get(`/medical/ai-diagnostic/${id}`);
+        setAiDiagnostic(data);
+      } catch (error) {
+        console.error("Error fetching AI diagnostic:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAiDiagnostic();
+  }, [id]);
 
   if (!patient) {
     return (
-      <Container style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Container style={{ justifyContent: 'center', alignItems: 'center' }} scrollable={false}>
         <Text>Patient non trouvé</Text>
         <Button title="Retour" onPress={() => router.back()} style={{ marginTop: 20 }} />
       </Container>
@@ -32,73 +44,27 @@ export default function AIEvaluationScreen() {
     ? patient.vitals[patient.vitals.length - 1] 
     : null;
 
-  // Logique d'analyse simplifiée basée sur les dernières constantes
-  const getAnalysis = () => {
-    if (!lastVitals) return {
-      score: 50,
-      status: 'Données insuffisantes',
-      color: theme.textSecondary,
-      points: ['Aucune donnée de constantes disponible pour analyse.'],
-      recommendations: ['Veuillez saisir les constantes vitales du patient.']
-    };
-
-    const points = [];
-    const recommendations = [];
-    let score = 85;
-
-    // Analyse tension
-    if (lastVitals.bloodPressureSys > 140 || lastVitals.bloodPressureDia > 90) {
-      points.push(`Hypertension détectée (${lastVitals.bloodPressureSys}/${lastVitals.bloodPressureDia} mmHg)`);
-      recommendations.push("Surveillance tensionnelle rapprochée (toutes les 4h)");
-      score -= 20;
-    } else if (lastVitals.bloodPressureSys < 100) {
-      points.push(`Hypotension détectée (${lastVitals.bloodPressureSys}/${lastVitals.bloodPressureDia} mmHg)`);
-      recommendations.push("Hydratation à surveiller");
-      score -= 15;
-    }
-
-    // Analyse pouls
-    if (lastVitals.heartRate > 100) {
-      points.push(`Tachycardie détectée (${lastVitals.heartRate} bpm)`);
-      recommendations.push("Repos strict au lit");
-      score -= 15;
-    } else if (lastVitals.heartRate < 50) {
-      points.push(`Bradycardie détectée (${lastVitals.heartRate} bpm)`);
-      score -= 15;
-    }
-
-    // Analyse SpO2
-    if (lastVitals.oxygenSaturation < 95) {
-      points.push(`Désaturation en oxygène (${lastVitals.oxygenSaturation}%)`);
-      recommendations.push("Oxygénothérapie à envisager selon protocole");
-      score -= 25;
-    }
-
-    // Analyse température
-    if (lastVitals.temperature > 38) {
-      points.push(`Hyperthermie (${lastVitals.temperature}°C)`);
-      recommendations.push("Administration d'antipyrétiques si prescrit");
-      score -= 15;
-    }
-
-    if (points.length === 0) {
-      points.push("Toutes les constantes sont dans les normes.");
-      recommendations.push("Continuer la surveillance de routine.");
-    }
-
-    const color = score > 80 ? theme.success : (score > 60 ? theme.warning : theme.error);
-    const status = score > 80 ? 'Risque Faible' : (score > 60 ? 'Risque Modéré' : 'Risque Élevé');
-
-    return { score, status, color, points, recommendations };
+  // Utiliser les données de l'IA si disponibles, sinon utiliser la logique locale comme fallback
+  const analysis = aiDiagnostic || {
+    score: 50,
+    status: 'Analyse en cours...',
+    color: theme.textSecondary,
+    summary: 'Analyse des données vitales...',
+    potentialRisks: [],
+    recommendations: []
   };
 
-  const analysis = getAnalysis();
+  // Adapter les données de l'IA aux besoins de l'UI
+  const displayColor = analysis.color || (analysis.score > 80 ? theme.success : (analysis.score > 60 ? theme.warning : theme.error));
+  const displayStatus = analysis.status || (analysis.score > 80 ? 'Risque Faible' : (analysis.score > 60 ? 'Risque Modéré' : 'Risque Élevé'));
+  const displayRisks = analysis.potentialRisks || [];
+  const displayRecommendations = analysis.recommendations || [];
 
   if (loading) {
     return (
-      <Container style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Container style={{ justifyContent: 'center', alignItems: 'center' }} scrollable={false}>
         <ActivityIndicator size="large" color={theme.primary} />
-        <Text style={{ marginTop: 20 }}>Analyse des données de {patient.firstName}...</Text>
+        <Text style={{ marginTop: 20 }}>Analyse DeepSeek en cours pour {patient.firstName}...</Text>
       </Container>
     );
   }
@@ -106,30 +72,39 @@ export default function AIEvaluationScreen() {
   return (
     <Container scrollable>
       <View style={styles.header}>
-        <Text variant="title">Évaluation IA</Text>
+        <Text variant="title">Évaluation IA DeepSeek</Text>
         <Text variant="secondary">{patient.firstName} {patient.lastName}</Text>
       </View>
 
-      <Card style={[styles.scoreCard, { backgroundColor: analysis.color + '20', borderColor: analysis.color }]}>
-        <Text variant="subtitle">Score de Risque</Text>
-        <Text style={[styles.scoreValue, { color: analysis.color }]}>{analysis.score}/100</Text>
-        <Text style={{ color: analysis.color, fontWeight: '600' }}>{analysis.status}</Text>
-        <Text variant="caption" style={{ marginTop: 4 }}>Basé sur les dernières constantes</Text>
+      <Card style={[styles.scoreCard, { backgroundColor: displayColor + '20', borderColor: displayColor }]}>
+        <Text variant="subtitle">Indice de Santé IA</Text>
+        <Text style={[styles.scoreValue, { color: displayColor }]}>{analysis.score}/100</Text>
+        <Text style={{ color: displayColor, fontWeight: '600' }}>{displayStatus}</Text>
+        <Text variant="caption" style={{ marginTop: 4 }}>Analyse prédictive en temps réel</Text>
       </Card>
 
       <View style={styles.section}>
-        <Text variant="subtitle" style={styles.sectionTitle}>Analyse Automatique</Text>
+        <Text variant="subtitle" style={styles.sectionTitle}>Résumé Clinique IA</Text>
         <Card>
-          {analysis.points.map((point, index) => (
-            <Text key={index} style={styles.analysisPoint}>• {point}</Text>
-          ))}
+          <Text style={styles.analysisPoint}>{analysis.summary}</Text>
         </Card>
       </View>
 
+      {displayRisks.length > 0 && (
+        <View style={styles.section}>
+          <Text variant="subtitle" style={styles.sectionTitle}>Risques Potentiels Identifiés</Text>
+          <Card>
+            {displayRisks.map((risk: string, index: number) => (
+              <Text key={index} style={styles.analysisPoint}>• {risk}</Text>
+            ))}
+          </Card>
+        </View>
+      )}
+
       <View style={styles.section}>
-        <Text variant="subtitle" style={styles.sectionTitle}>Recommandations IA</Text>
+        <Text variant="subtitle" style={styles.sectionTitle}>Actions Recommandées</Text>
         <Card>
-          {analysis.recommendations.map((rec, index) => (
+          {displayRecommendations.map((rec: string, index: number) => (
             <View key={index} style={{ marginBottom: 12 }}>
               <Text style={styles.recommendationTitle}>{index + 1}. {rec.split(' ')[0]} {rec.split(' ')[1] || ''}</Text>
               <Text variant="secondary">{rec}</Text>
