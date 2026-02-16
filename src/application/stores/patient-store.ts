@@ -16,13 +16,19 @@ interface PatientState {
   selectPatient: (id: string | null) => void;
   addVitals: (patientId: string, vitals: Omit<VitalSigns, 'id' | 'patientId' | 'timestamp'>) => Promise<void>;
   administerMedication: (patientId: string, administration: Omit<MedicationAdministration, 'id' | 'patientId' | 'timestamp'>) => Promise<void>;
+  
+  // Tasks
+  tasks: any[];
+  fetchTasks: (patientId?: string) => Promise<void>;
+  updateTaskStatus: (taskId: string, status: string) => Promise<void>;
 }
 
-export const usePatientStore = create<PatientState>((set) => ({
+export const usePatientStore = create<PatientState>((set, get) => ({
   patients: [],
   selectedPatientId: null,
   isLoading: false,
   error: null,
+  tasks: [],
 
   fetchPatients: async () => {
     set({ isLoading: true, error: null });
@@ -104,6 +110,28 @@ export const usePatientStore = create<PatientState>((set) => ({
       set({ isLoading: false });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
+    }
+  },
+
+  fetchTasks: async (patientId) => {
+    set({ isLoading: true });
+    try {
+      const endpoint = patientId ? `/medical/tasks?patientId=${patientId}` : '/medical/tasks';
+      const tasks = await apiClient.get(endpoint);
+      set({ tasks, isLoading: false });
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+    }
+  },
+
+  updateTaskStatus: async (taskId, status) => {
+    try {
+      await apiClient.patch(`/medical/tasks/${taskId}/status`, { status });
+      set((state) => ({
+        tasks: state.tasks.map((t) => t.id === taskId ? { ...t, status } : t)
+      }));
+    } catch (error: any) {
+      set({ error: error.message });
     }
   },
 }));
